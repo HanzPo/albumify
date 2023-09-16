@@ -31,6 +31,8 @@ def get_lyrics(title, artist):
     except Exception as e:
         return None
 
+# can only use 10,000 tokens per minute
+
 def process_song(song):
     l = get_lyrics(*song)
 
@@ -66,7 +68,7 @@ async def create_item(request: Request):
     descriptions = "|".join(replies)
     messages.append({"role": "user", "content": descriptions},)
     chat = openai.ChatCompletion.create(
-        model="gpt-4", messages=messages, max_tokens=3000
+        model="gpt-4", messages=messages, max_tokens=2000
     )
 
     output = chat.choices[0].message.content + ". There should never be text in the resulting image."
