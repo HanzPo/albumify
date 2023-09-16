@@ -6,8 +6,8 @@ const CoverOutput = () => {
   return (
     <>
       <div className="image-container">
-          <img src="/placeholder.png" />
-          <img src="/placeholder.png" />
+        <img src="/placeholder.png" />
+        <img src="/placeholder.png" />
 
         <img src="/placeholder.png" />
         <img src="/placeholder.png" />
