@@ -1,6 +1,7 @@
 import lyricsgenius
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
 from multiprocessing import Pool
 import json
@@ -54,6 +55,26 @@ def process_song(song):
     return reply
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "https://localhost:5173",
+]
+
+# Allow these methods to be used
+methods = ["GET", "POST", "PUT", "DELETE"]
+
+# Only these headers are allowed
+headers = ["Content-Type", "Authorization"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=methods,
+    allow_headers=headers,
+)
+
 
 @app.post("/create/")
 async def create_item(request: Request):
