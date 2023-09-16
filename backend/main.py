@@ -1,5 +1,5 @@
 import lyricsgenius
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
@@ -10,6 +10,8 @@ import requests
 import random
 import os
 from dotenv import load_dotenv
+from PIL import Image
+import io
 
 # Load the environment variables from .env file
 load_dotenv()
@@ -56,28 +58,9 @@ def process_song(song):
 
 app = FastAPI()
 
-origins = [
-    "http://localhost",
-    "https://localhost:5173",
-]
-
-# Allow these methods to be used
-methods = ["GET", "POST", "PUT", "DELETE"]
-
-# Only these headers are allowed
-headers = ["Content-Type", "Authorization"]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=methods,
-    allow_headers=headers,
-)
-
-
 @app.post("/create/")
-async def create_item(request: Request):
+async def create_item(request: Request, response: Response):
+    Response.headers["Access-Control-Allow-Origin"] = "*"
 
     songs = json.loads(await request.body())
     songs = [(song,artist) for song,artist in songs.items()]
@@ -113,12 +96,15 @@ async def create_item(request: Request):
     for url in image_urls:
         name = ''.join(random.choice(letters) for i in range(40))
         r = requests.get(url, allow_redirects=True)
-        with open("images/" +name + ".png", "wb") as file:
-            file.write(r.content)
+        image_data = r.content
+        image_stream = io.BytesIO(image_data)
+        image = Image.open(image_stream)
+        image.save("images/" + name + ".png")
         ret_ids.append(name)
 
     return ret_ids
 
 @app.get("/image/{image_id}")
 def get_image(image_id):
-    return FileResponse("images/" + image_id + ".png")
+    headers = {"Access-Control-Allow-Origin": "*"}
+    return FileResponse("images/" + image_id + ".png", headers=headers)
