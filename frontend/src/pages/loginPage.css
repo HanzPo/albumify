@@ -1,13 +1,17 @@
-.login {
-    height:'100dvh';
-    display: 'flex';
-    align-items: 'center';
-    justify-content: 'center';
-    background-image: url('../assets/background.png');
+.login-container {
+    background-image: url('../assets/background2.png');
     background-color: rgba(255, 255, 255, 0.02);
     background-size: cover; /* Adjust the size as needed */
     background-position: center center; /* Center the image */
     background-repeat: no-repeat; /* Prevent image repetition */
+}
+
+.intro-container {
+    height:'100dvh';
+    display: 'flex';
+    align-items: 'center';
+    justify-content: 'center';
+    color: white;
     
 }
 
@@ -15,29 +19,61 @@
     font-size: 5rem;
     color: white;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    margin-bottom: 5rem;
-    animation: typing 3s steps(30, end), blink-cursor 0.5s step-end infinite;
     border-right: 3px solid transparent;
     white-space: nowrap;
     overflow: hidden;
+    animation-name: slide-up, typing;
+    animation-duration: 2s, 3s;
+    animation-delay: 3s, 0s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
 }
 
-.intro-form {
-    background-color: white;
-    padding: 20px;
-    border-radius: 20px;
-    color: purple;
-    box-shadow: '10px 10px 10px 10px rgba(0, 0, 0, 1)'
+.intro-container p {
+    font-size: 2rem;
+    animation-name: slide-down;
+    animation-duration: 2s;
+    animation-delay: 5s;
+    opacity: 0;
+    animation-fill-mode: forwards;
+
 }
 
+.spotify-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin-top: 0;
+}
 
+#login-button {
+    padding: 30px;
+
+}
 
 @keyframes typing {
     from {
         width: 0;
     }
     to {
-        width: 68%;
+        width: 57%;
+    }
+}
+
+@keyframes slide-up {
+    to {
+        transform: translateY(-100%);
+        opacity: 1;
+    }
+}
+
+@keyframes slide-down {
+    0% {
+        transform: translateY(-300%); /* Start off-screen */
+    }
+    100% {
+        transform: translateY(-100%); /* Slide down to 0% */
+        opacity: 1
     }
 }
 
