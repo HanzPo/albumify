@@ -98,36 +98,37 @@ function Dashboard() {
   // serialize the song and artist data for image generation api
   const generateImage = async () => {
     setGeneratingState('generating')
-    const serializedSongData = userSongs[0].reduce((result, item, index) => {
-      if (index < 6) {
-        result[item.song] = item.artist;
-      }
-      return result;
-    }, {})
-    try {
-      const response = await fetch('http://127.0.0.1:8000/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(serializedSongData)
-      })
+    // const serializedSongData = userSongs[0].reduce((result, item, index) => {
+    //   if (index < 6) {
+    //     result[item.song] = item.artist;
+    //   }
+    //   return result;
+    // }, {})
+    // try {
+    //   const response = await fetch('http://127.0.0.1:8000/create', {
+    //     method: 'POST',
+    //     headers: {
+    //       'Content-Type': 'application/json'
+    //     },
+    //     body: JSON.stringify(serializedSongData)
+    //   })
 
-      if (!response.ok) {
-        throw new Error('Request failed')
-      }
+    //   if (!response.ok) {
+    //     throw new Error('Request failed')
+    //   }
 
-      const imageIds = await response.json()
-
+    //   const imageIds = await response.json()
+      const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
       setGeneratedImageUrls(imageIds)
 
       setGeneratingState('done')
 
-    } catch (error) {
-      console.error(error)
-    }
+    // } catch (error) {
+    //   console.error(error)
+    // }
 
   }
+
 
 
   return (
@@ -140,7 +141,7 @@ function Dashboard() {
               onClick={(e) => generateImage()}
               className='magic-text generatingButton'
               style={{
-                cursor: 'pointer',
+                cursor: `${generatingState === 'generating' ? 'default' : 'pointer'}`,
                 position: 'fixed',
                 width: '100%',
                 bottom: '0',
@@ -177,13 +178,13 @@ function Dashboard() {
                   <AccordionIcon style={{ height: '24px', width: '24px' }} />
                 </AccordionButton>
               </h2>
-              <AccordionPanel style={{ boxShadow:'inset 0 0 20px 0 rgb(0 0 0 / 0.1)', gap: '8px', display: 'grid', gridTemplateColumns: `repeat(3, 1fr)` }}>
+              <AccordionPanel style={{ boxShadow: 'inset 0 0 20px 0 rgb(0 0 0 / 0.1)', gap: '8px', display: 'grid', gridTemplateColumns: `repeat(3, 1fr)` }}>
                 {playlist.slice(0, 9).map((song, songIndex) => (
                   <li key={songIndex} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
                     <h1 style={{ maxHeight: '32px', overflow: 'hidden', fontSize: '20px' }}>{song.song}</h1>
                     <h1>By {song.artist}</h1>
                     <AspectRatio ratio={1}>
-                      <img src={song.img} />
+                      <img style={{ borderRadius: '8px' }} src={song.img} />
                     </AspectRatio>
                   </li>
                 ))}
