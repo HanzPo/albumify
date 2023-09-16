@@ -1,17 +1,16 @@
 import React from "react";
+import "./CoverOutput.css";
 import { useState } from "react";
 
 const CoverOutput = () => {
   return (
     <>
-      <div>
-        <div>
-          <img src="../assets/placeholder.png" />
-          <img src="../assets/placeholder.png" />
-        </div>
+      <div className="image-container">
+          <img src="/placeholder.png" />
+          <img src="/placeholder.png" />
 
-        <img src="../assets/placeholder.png" />
-        <img src="../assets/placeholder.png" />
+        <img src="/placeholder.png" />
+        <img src="/placeholder.png" />
       </div>
     </>
   );
