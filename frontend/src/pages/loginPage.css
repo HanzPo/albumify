@@ -1,0 +1,49 @@
+.login {
+    height:'100dvh';
+    display: 'flex';
+    align-items: 'center';
+    justify-content: 'center';
+    background-image: url('../assets/background.png');
+    background-color: rgba(255, 255, 255, 0.02);
+    background-size: cover; /* Adjust the size as needed */
+    background-position: center center; /* Center the image */
+    background-repeat: no-repeat; /* Prevent image repetition */
+    
+}
+
+.introduction {
+    font-size: 5rem;
+    color: white;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    margin-bottom: 5rem;
+    animation: typing 3s steps(30, end), blink-cursor 0.5s step-end infinite;
+    border-right: 3px solid transparent;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.intro-form {
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+    color: purple;
+    box-shadow: '10px 10px 10px 10px rgba(0, 0, 0, 1)'
+}
+
+
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+    to {
+        width: 68%;
+    }
+}
+
+/* Blinking cursor keyframes */
+@keyframes blink-cursor {
+    50% {
+        border-right-color: transparent;
+    }
+}

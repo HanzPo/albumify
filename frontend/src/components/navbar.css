@@ -1,0 +1,9 @@
+.nav-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+.nav-menu > *{
+    padding-right: 40px;
+}
