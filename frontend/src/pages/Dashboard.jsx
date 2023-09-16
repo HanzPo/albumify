@@ -66,17 +66,16 @@ function Dashboard() {
           <h2>
             <AccordionButton>
               <Box as="span" flex='1' textAlign='left'>
-                Section 1 title
+                Section 1 title {/* Enter the Playlist name here using userPlaylist[index of map] */}
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
-            
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-            commodo consequat.
+            - song 1
+            - song 2
+            - song 3
+            - song 4
           </AccordionPanel>
         </AccordionItem>
 
