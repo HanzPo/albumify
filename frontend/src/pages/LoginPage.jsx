@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import './loginPage.css' 
 import { Button, ButtonGroup } from '@chakra-ui/react'
-import Navbar from '../components/Navbar'
-import { Box, FormControl, FormLabel, Input } from '@chakra-ui/react';
 
 function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
