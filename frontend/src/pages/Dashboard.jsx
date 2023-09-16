@@ -177,10 +177,10 @@ function Dashboard() {
                   <AccordionIcon style={{ height: '24px', width: '24px' }} />
                 </AccordionButton>
               </h2>
-              <AccordionPanel style={{ gap: '8px', display: 'grid', gridTemplateColumns: `repeat(3, 1fr)` }}>
+              <AccordionPanel style={{ boxShadow:'inset 0 0 20px 0 rgb(0 0 0 / 0.1)', gap: '8px', display: 'grid', gridTemplateColumns: `repeat(3, 1fr)` }}>
                 {playlist.slice(0, 9).map((song, songIndex) => (
                   <li key={songIndex} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
-                    <h1 style={{ fontSize: '20px' }}>{song.song}</h1>
+                    <h1 style={{ maxHeight: '32px', overflow: 'hidden', fontSize: '20px' }}>{song.song}</h1>
                     <h1>By {song.artist}</h1>
                     <AspectRatio ratio={1}>
                       <img src={song.img} />
