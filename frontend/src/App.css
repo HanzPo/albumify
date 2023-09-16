@@ -44,7 +44,7 @@
   }
 }
 
-.magic-text {
+.magic-bg {
   animation: background-pan 3s linear infinite !important;
   background: linear-gradient(to right,
       var(--purple),
@@ -58,4 +58,17 @@
 
 .generatingButton {
   transition: all 0.5s;
+}
+
+.magic-text {
+  animation: background-pan 3s linear infinite !important;
+  background: linear-gradient(to right,
+      var(--purple),
+      var(--violet),
+      var(--pink),
+      var(--purple));
+  -webkit-background-clip: text;
+  background-size: 200%;
+  white-space: nowrap;
+  color: white;
 }
