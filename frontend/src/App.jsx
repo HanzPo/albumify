@@ -5,6 +5,7 @@ import LoginPage from "./pages/LoginPage";
 import { Route, Routes } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
 import About from "./pages/About";
+import Contact from "./pages/Contact"
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="*" element={<h1>Not found</h1>} />
         <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
     </>
   );

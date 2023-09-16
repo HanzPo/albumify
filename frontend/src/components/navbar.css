@@ -1,9 +1,24 @@
 .nav-menu {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  list-style-type: none;
+  position: relative;
 }
 
-.nav-menu > *{
-    padding-right: 40px;
+.nav-menu > * {
+  padding-right: 40px;
 }
+
+.nav-menu li {
+  padding: 5px 10px;
+  border-radius: 15px;
+}
+
+#login-page-button {
+  background-color: darkblue;
+}
+
+#login-page-button:hover {
+    background-color: lightblue;
+  }
