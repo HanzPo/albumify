@@ -11,7 +11,6 @@ import {
   AspectRatio,
   CircularProgress
 } from "@chakra-ui/react";
-import NavBar from "../components/Navbar";
 import axios from "axios";
 
 function Dashboard() {
