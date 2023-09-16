@@ -58,6 +58,12 @@ def process_song(song):
     return reply
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace "*" with your specific allowed origins
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all HTTP headers
+)
 
 @app.post("/create/")
 async def create_item(request: Request, response: Response):
