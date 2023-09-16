@@ -60,8 +60,6 @@ app = FastAPI()
 
 @app.post("/create/")
 async def create_item(request: Request, response: Response):
-    Response.headers["Access-Control-Allow-Origin"] = "*"
-
     songs = json.loads(await request.body())
     songs = [(song,artist) for song,artist in songs.items()]
 
@@ -99,10 +97,11 @@ async def create_item(request: Request, response: Response):
         image_data = r.content
         image_stream = io.BytesIO(image_data)
         image = Image.open(image_stream)
-        image.save("images/" + name + ".png")
+        image.save("images/" + name + ".png", optimize=True, quality=8)
         ret_ids.append(name)
 
-    return ret_ids
+    headers = {"Access-Control-Allow-Origin": "*"}
+    return Response(content=ret_ids, headers=headers)
 
 @app.get("/image/{image_id}")
 def get_image(image_id):
