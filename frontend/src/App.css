@@ -1,8 +1,45 @@
-
-
 .loading-icon {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background: linear-gradient(236deg, #b8d4f9, #bac1f2, #e5c8ea);
+  background-size: 600% 600%;
+  -webkit-animation: AnimationName 0s ease infinite;
+  -moz-animation: AnimationName 0s ease infinite;
+  animation: AnimationName 0s ease infinite;
+}
+
+@-webkit-keyframes AnimationName {
+  0% {
+    background-position: 58% 0%;
+  }
+  50% {
+    background-position: 43% 100%;
+  }
+  100% {
+    background-position: 58% 0%;
+  }
+}
+@-moz-keyframes AnimationName {
+  0% {
+    background-position: 58% 0%;
+  }
+  50% {
+    background-position: 43% 100%;
+  }
+  100% {
+    background-position: 58% 0%;
+  }
+}
+@keyframes AnimationName {
+  0% {
+    background-position: 58% 0%;
+  }
+  50% {
+    background-position: 43% 100%;
+  }
+  100% {
+    background-position: 58% 0%;
+  }
 }

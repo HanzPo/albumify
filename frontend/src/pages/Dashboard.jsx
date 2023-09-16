@@ -61,21 +61,37 @@ function Dashboard() {
     <div>
       <h1>{userData.display_name}</h1>
       {/* This entire component will be mapped over for each element in the userPlaylists array state */}
-      <Accordion>
+      <Accordion allowMultiple allowToggle>
         <AccordionItem>
           <h2>
             <AccordionButton>
               <Box as="span" flex='1' textAlign='left'>
-                Section 1 title {/* Enter the Playlist name here using userPlaylist[index of map] */}
+                Playlist 1 title  {/* Title of the playlist */}
               </Box>
               <AccordionIcon />
             </AccordionButton>
           </h2>
           <AccordionPanel pb={4}>
+            {/* List of Songs in a table */}
             - song 1
             - song 2
             - song 3
             - song 4
+
+            <Box p="4">
+              <Button
+                colorScheme="blue"
+                size="lg" // Make the button larger
+                borderRadius="4px" // Reduce the border radius
+                boxShadow="4px 4px 8px 0px rgba(0, 0, 0, 0.2), -4px -4px 8px 0px rgba(255, 255, 255, 0.7)"
+                position="absolute" // Position the button absolutely
+                right="16px" // Move it to the right side
+                _hover={{
+                  boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.2), -2px -2px 4px 0px rgba(255, 255, 255, 0.7)",
+                }} >
+                Click me
+              </Button>
+            </Box>
           </AccordionPanel>
         </AccordionItem>
 

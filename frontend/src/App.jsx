@@ -11,7 +11,7 @@ const App = () => {
   if (isLoading) {
     return (
       <div className="loading-icon">
-        <Spinner color="blue" thickness="4px" size="xl" />
+        <Spinner color="#383838" thickness="4px" size="xl" />
       </div>
     );
   }

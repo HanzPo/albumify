@@ -8,7 +8,7 @@ const theme = extendTheme({
   colors: {
     brand: {
       primary: "#f7fafc",
-      secondary: "#00000",
+      secondary: "#000000",
       accent: "#000000"
     },
   },
