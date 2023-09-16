@@ -1,6 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { Button, ButtonGroup } from "@chakra-ui/react";
+import { Button, ButtonGroup, Slider } from "@chakra-ui/react";
 import {
   Accordion,
   AccordionItem,
@@ -9,17 +9,19 @@ import {
   Box,
   AccordionIcon,
   AspectRatio,
+  CircularProgress
 } from "@chakra-ui/react";
 import NavBar from "../components/Navbar";
 import axios from "axios";
 
 function Dashboard() {
-  const [isGatheringImages, setGatheringImages] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userSongs, setSongs] = useState(null);
-  const [userPlaylists, setUserPlaylists] = useState(null);
-  const [selectedPlaylist, setSelectedPlaylist] = useState(-1);
+  const [userPlaylists, setUserPlaylists] = useState(null)
+  const [selectedPlaylist, setSelectedPlaylist] = useState(-1)
+  const [generatedImageUrls, setGeneratedImageUrls] = useState(null)
+  const [generatingState, setGeneratingState] = useState('before')
 
   // get accesstoken from the url
   useEffect(() => {
@@ -94,113 +96,102 @@ function Dashboard() {
   }, [accessToken, userPlaylists]);
 
   // serialize the song and artist data for image generation api
-  useEffect(() => {
-    if (userSongs) {
-      const serializedSongData = userSongs[0].reduce((result, item, index) => {
-        if (index < 6) {
-          result[item.song] = item.artist;
-        }
-        return result;
-      }, {});
-      // console.log(serializedSongData)
+  const generateImage = async () => {
+    setGeneratingState('generating')
+    const serializedSongData = userSongs[0].reduce((result, item, index) => {
+      if (index < 6) {
+        result[item.song] = item.artist;
+      }
+      return result;
+    }, {})
+    try {
+      const response = await fetch('http://127.0.0.1:8000/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(serializedSongData)
+      })
+
+      if (!response.ok) {
+        throw new Error('Request failed')
+      }
+
+      const imageIds = await response.json()
+
+      setGeneratedImageUrls(imageIds)
+
+      setGeneratingState('done')
+
+    } catch (error) {
+      console.error(error)
     }
-  }, [userSongs]);
+
+  }
+
 
   return (
-    <>
-      <NavBar />
-      <div
-        style={{
-          padding: "50px",
-          display: "flex",
-          gap: "12px",
-          flexDirection: "column",
-        }}
-      >
-        {userData && userPlaylists && (
-          <>
-            <h1 style={{ fontSize: "50px" }}>Hey, {userData.display_name}</h1>
-            {selectedPlaylist !== -1 && (
-              <div
-                className="magic-text"
-                style={{
-                  cursor: "pointer",
-                  position: "fixed",
-                  height: "100px",
-                  width: "100%",
-                  bottom: "0",
-                  marginLeft: "-50px",
-                  zIndex: "99",
-                  alignItems: "center",
-                  display: "flex",
-                  justifyContent: "center",
-                }}
-              >
-                <h1 style={{ fontSize: "24px" }}>
-                  Generate playlist cover for{" "}
-                  {userPlaylists[selectedPlaylist].name}
-                </h1>
-              </div>
-            )}
-          </>
-        )}
-        <h1 style={{ fontSize: "20px", marginBottom: "12px" }}>
-          Select one of your playlists
-        </h1>
-        {userSongs && (
-          <Accordion
-            allowToggle
-            index={selectedPlaylist}
-            onChange={(e) => {
-              console.log(e);
-              setSelectedPlaylist(e);
-            }}
-          >
-            {userSongs.map((playlist, index) => (
-              <AccordionItem key={index}>
-                <h2>
-                  <AccordionButton
-                    className={selectedPlaylist === index ? "magic-text" : ""}
-                    style={{ display: "flex", gap: "4px" }}
-                  >
-                    <Box>
-                      <h1 style={{ fontSize: "24px" }}>
-                        {userPlaylists[index].name}
-                      </h1>
-                    </Box>
-                    <AccordionIcon style={{ height: "24px", width: "24px" }} />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel
-                  style={{
-                    gap: "8px",
-                    display: "grid",
-                    gridTemplateColumns: `repeat(3, 1fr)`,
-                  }}
-                >
-                  {playlist.slice(0, 9).map((song, songIndex) => (
-                    <li
-                      key={songIndex}
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: "0px",
-                      }}
-                    >
-                      <h1 style={{ fontSize: "20px" }}>{song.song}</h1>
-                      <h1>By {song.artist}</h1>
-                      <AspectRatio ratio={1}>
-                        <img src={song.img} />
-                      </AspectRatio>
-                    </li>
-                  ))}
-                </AccordionPanel>
-              </AccordionItem>
-            ))}{" "}
-          </Accordion>
-        )}
-      </div>
-    </>
+    <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
+      {userData && userPlaylists &&
+        <>
+          <h1 style={{ fontSize: '50px' }}>Hey, {userData.display_name}</h1>
+          {selectedPlaylist !== -1 && (
+            <div
+              onClick={(e) => generateImage()}
+              className='magic-text generatingButton'
+              style={{
+                cursor: 'pointer',
+                position: 'fixed',
+                width: '100%',
+                bottom: '0',
+                marginLeft: '-50px',
+                zIndex: '99',
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
+                height: `${generatingState === 'generating' ? '100dvh' : generatingState === 'done' ? '0' : '100px'}`
+              }}
+            >
+              {generatingState === 'generating' ? (
+                <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '8px' }}>
+                  <CircularProgress size='40px' isIndeterminate />
+                  <p style={{ fontSize: '20px' }}>Generating image...</p>
+                </div>
+              ) : (
+                <h1 style={{ fontSize: '24px' }}>Generate playlist cover for {userPlaylists[selectedPlaylist].name}</h1>
+              )}
+            </div>
+          )}
+        </>
+      }
+      <h1 style={{ fontSize: '20px', marginBottom: '12px' }}>Select one of your playlists</h1>
+      {userSongs &&
+        <Accordion allowToggle index={selectedPlaylist} onChange={(e) => { setSelectedPlaylist(e) }} >
+          {userSongs.map((playlist, index) => (
+            <AccordionItem key={index}>
+              <h2>
+                <AccordionButton className={selectedPlaylist === index ? 'magic-text' : ''} style={{ display: 'flex', gap: '4px' }}>
+                  <Box>
+                    <h1 style={{ fontSize: '24px' }}>{userPlaylists[index].name}</h1>
+                  </Box>
+                  <AccordionIcon style={{ height: '24px', width: '24px' }} />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel style={{ gap: '8px', display: 'grid', gridTemplateColumns: `repeat(3, 1fr)` }}>
+                {playlist.slice(0, 9).map((song, songIndex) => (
+                  <li key={songIndex} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+                    <h1 style={{ fontSize: '20px' }}>{song.song}</h1>
+                    <h1>By {song.artist}</h1>
+                    <AspectRatio ratio={1}>
+                      <img src={song.img} />
+                    </AspectRatio>
+                  </li>
+                ))}
+              </AccordionPanel>
+            </AccordionItem>
+          ))
+          } </Accordion>}
+    </div>
   );
 }
 
