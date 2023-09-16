@@ -1,7 +1,7 @@
 :root {
-  --purple: rgb(31, 55, 162);
-  --violet: rgb(58, 127, 183);
-  --pink: rgb(77, 111, 160);
+  --purple: rgba(235,235,244,1);
+  --violet: rgba(115,219,241,1);
+  --pink: rgba(183,150,249,1);
 }
 
 

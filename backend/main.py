@@ -107,7 +107,7 @@ async def create_item(request: Request, response: Response):
         image.save("images/" + name + ".jpg",  optimize=True, quality=10)
         ret_ids.append(name)
 
-    response_data = "\n".join(ret_ids)
+    response_data = "[\""+"\",\"".join(ret_ids)+"\"]"
 
     headers = {"Access-Control-Allow-Origin": "*"}
     return Response(content=response_data, headers=headers)

@@ -1,6 +1,6 @@
 .login-container {
-    background-image: url('../assets/background3.png');
-    background-color: rgba(255, 255, 255, 0.02);
+    /*background-image: url('../assets/background3.png');*/
+    background-color: black;
     background-size: cover; /* Adjust the size as needed */
     background-position: center center; /* Center the image */
     background-repeat: no-repeat; /* Prevent image repetition */
@@ -11,8 +11,7 @@
     display: 'flex';
     align-items: 'center';
     justify-content: 'center';
-    color: white;
-    
+    max-width: 100%;
 }
 
 .introduction {
@@ -26,17 +25,24 @@
     animation-delay: 3s, 0s;
     animation-iteration-count: 1, 1;
     animation-fill-mode: forwards;
-    text-shadow: 0 0 30px #f06, 0 0 30px #f06, 0 0 30px #f06;
+    background: linear-gradient(90deg, rgba(235,235,244,1) 0%, rgba(240,92,255,1) 0%, rgba(115,219,241,1) 97%);
+
+    -webkit-background-clip: text; /* Clip text to the background */
+    color: transparent; /* Make text transparent */
 }
 
 .intro-container p {
     font-size: 2rem;
     animation-name: slide-down;
+    color: white;
+    font-weight: bold;
     animation-duration: 2s;
     animation-delay: 4.5s;
     opacity: 0;
     animation-fill-mode: forwards;
-    text-shadow: 0 0 30px rgb(255, 109, 168), 0 0 30px rgb(255, 109, 168), 0 0 30px rgb(255, 109, 168);
+    background: linear-gradient(90deg, rgba(235,235,244,1) 0%, rgba(115,219,241,1) 0%, rgba(240,92,255,1) 100%);
+    -webkit-background-clip: text;
+    color: transparent
 
 }
 
@@ -50,11 +56,12 @@
     animation-delay: 5.5s;
     animation-duration: 2s;
     animation-fill-mode: forwards;
+
 }
 
 #login-button {
     padding: 30px;
-
+    color: purple;
 }
 
 @keyframes typing {
