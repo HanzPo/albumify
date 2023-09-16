@@ -1,6 +1,6 @@
 import lyricsgenius
 from fastapi import FastAPI, Response
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Request
 from multiprocessing import Pool
@@ -12,6 +12,7 @@ import os
 from dotenv import load_dotenv
 from PIL import Image
 import io
+import base64
 
 # Load the environment variables from .env file
 load_dotenv()
@@ -97,13 +98,23 @@ async def create_item(request: Request, response: Response):
         image_data = r.content
         image_stream = io.BytesIO(image_data)
         image = Image.open(image_stream)
-        image.save("images/" + name + ".png", optimize=True, quality=8)
+        image.save("images/" + name + ".jpg",  optimize=True, quality=10)
         ret_ids.append(name)
 
+    response_data = "\n".join(ret_ids)
+
     headers = {"Access-Control-Allow-Origin": "*"}
-    return Response(content=ret_ids, headers=headers)
+    return Response(content=response_data, headers=headers)
 
 @app.get("/image/{image_id}")
 def get_image(image_id):
     headers = {"Access-Control-Allow-Origin": "*"}
-    return FileResponse("images/" + image_id + ".png", headers=headers)
+    return FileResponse("images/" + image_id + ".jpg", headers=headers)
+
+@app.get("/image_blob/{image_id}")
+def get_image(image_id):
+    headers = {"Access-Control-Allow-Origin": "*"}
+    with open("images/" + image_id + ".jpg", "rb") as file:
+        file_bytes = file.read()
+    base64_encoded = base64.b64encode(file_bytes).decode('utf-8')
+    return PlainTextResponse(base64_encoded, headers=headers)
