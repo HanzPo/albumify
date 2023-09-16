@@ -1,5 +1,5 @@
 .login-container {
-    background-image: url('../assets/background2.png');
+    background-image: url('../assets/background3.png');
     background-color: rgba(255, 255, 255, 0.02);
     background-size: cover; /* Adjust the size as needed */
     background-position: center center; /* Center the image */
@@ -19,23 +19,24 @@
     font-size: 5rem;
     color: white;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    border-right: 3px solid transparent;
     white-space: nowrap;
     overflow: hidden;
     animation-name: slide-up, typing;
     animation-duration: 2s, 3s;
     animation-delay: 3s, 0s;
-    animation-iteration-count: 1;
+    animation-iteration-count: 1, 1;
     animation-fill-mode: forwards;
+    text-shadow: 0 0 30px #f06, 0 0 30px #f06, 0 0 30px #f06;
 }
 
 .intro-container p {
     font-size: 2rem;
     animation-name: slide-down;
     animation-duration: 2s;
-    animation-delay: 5s;
+    animation-delay: 4.5s;
     opacity: 0;
     animation-fill-mode: forwards;
+    text-shadow: 0 0 30px rgb(255, 109, 168), 0 0 30px rgb(255, 109, 168), 0 0 30px rgb(255, 109, 168);
 
 }
 
@@ -44,6 +45,11 @@
     flex-direction: row;
     justify-content: center;
     margin-top: 0;
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-delay: 5.5s;
+    animation-duration: 2s;
+    animation-fill-mode: forwards;
 }
 
 #login-button {
@@ -83,3 +89,10 @@
         border-right-color: transparent;
     }
 }
+
+@keyframes fadeIn {
+    to {
+        opacity: 1; /* Fade in to become fully visible */
+    }
+}
+
