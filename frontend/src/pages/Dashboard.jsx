@@ -7,14 +7,14 @@ import {
   AccordionButton,
   AccordionPanel,
 } from "@chakra-ui/react";
-import { ArrowForwardIcon } from "@chakra-ui/icon";
 import axios from "axios";
 
 function Dashboard() {
   const [isGatheringImages, setGatheringImages] = false;
   const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState(null);
-  const [songs, setSongs] = useState(null);
+  const [userSongs, setSongs] = useState(null);
+  const [userPlaylists, setUserPlaylists] = useState(null)
 
   // get accesstoken from the url
   useEffect(() => {
@@ -30,21 +30,29 @@ function Dashboard() {
     getAccessTokenFromURL();
   }, []);
 
-// Get user Data (speicfically name)
+  // Get user Data (speicfically name)
   useEffect(() => {
     if (accessToken) {
-      axios
-        .get("https://api.spotify.com/v1/me", {
+      const getUserData = axios.get("https://api.spotify.com/v1/me", {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      const getUserPlaylist = axios.get(
+        "https://api.spotify.com/v1/me/playlists",
+        {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        })
-        .then((response) => {
-          // Set the user data in the component's state
-          setUserData(response.data);
+        }
+      );
+      Promise.all([getUserData, getUserPlaylists])
+        .then(([userDataResponse, playlistsResponse]) => {
+          setUserData(userDataResponse.data);
+          setUserPlaylists(playlistsResponse.data.items);
         })
         .catch((error) => {
-          console.error("Error fetching user data:", error);
+          console.error("Error fetching data:", error);
         });
     }
   }, [accessToken]);
@@ -52,13 +60,43 @@ function Dashboard() {
   return (
     <div>
       <h1>{userData.display_name}</h1>
-      <Accordion items={items}/>
-      <Button
-        onclick={() => console.log("works")}
-        rightIcon={<ArrowForwardIcon />}
-        colorScheme="teal"
-        variant="outline"
-      />
+      {/* This entire component will be mapped over for each element in the userPlaylists array state */}
+      <Accordion>
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex='1' textAlign='left'>
+                Section 1 title
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+            commodo consequat.
+          </AccordionPanel>
+        </AccordionItem>
+
+        <AccordionItem>
+          <h2>
+            <AccordionButton>
+              <Box as="span" flex='1' textAlign='left'>
+                Section 2 title
+              </Box>
+              <AccordionIcon />
+            </AccordionButton>
+          </h2>
+          <AccordionPanel pb={4}>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+            commodo consequat.
+          </AccordionPanel>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
