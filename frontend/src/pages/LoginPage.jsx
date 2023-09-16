@@ -15,6 +15,7 @@ function LoginPage() {
 
   return (
     <div>
+      <Navbar />
       <div className="login" style={{ height:'100dvh',display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h1 className="introduction"> Welcome to the Cover Generator </h1>
         <h2 classname="intro2"></h2>

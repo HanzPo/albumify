@@ -9,7 +9,7 @@ function Navbar() {
           <Heading size="md">Cover Generator</Heading>
           <ul className="nav-menu">
             <li>
-                <a href=""> About Us </a>
+                <a href="/about"> About Us </a>
             </li>
             <li>
                 <a href=""> Contact </a>
