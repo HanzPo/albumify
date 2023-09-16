@@ -96,44 +96,44 @@ function Dashboard() {
   }, [accessToken, userPlaylists]);
 
   // serialize the song and artist data for image generation api
-  // const generateImage = async () => {
-  //   setGeneratingState('generating')
-  //   const serializedSongData = userSongs[0].reduce((result, item, index) => {
-  //     if (index < 6) {
-  //       result[item.song] = item.artist;
-  //     }
-  //     return result;
-  //   }, {})
-  //   try {
-  //     const response = await fetch('http://127.0.0.1:8000/create', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       },
-  //       body: JSON.stringify(serializedSongData)
-  //     })
-
-  //     if (!response.ok) {
-  //       throw new Error('Request failed')
-  //     }
-
-  //     const imageIds = await response.json()
-
-  //     setGeneratingState('done')
-  //   } catch (error) {
-  //     console.error(error)
-  //   }
-
-  // }
-
   const generateImage = async () => {
     setGeneratingState('generating')
+    const serializedSongData = userSongs[0].reduce((result, item, index) => {
+      if (index < 6) {
+        result[item.song] = item.artist;
+      }
+      return result;
+    }, {})
+    try {
+      const response = await fetch('http://127.0.0.1:8000/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(serializedSongData)
+      })
 
-    const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
-    setGeneratedImageUrls(imageIds)
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    setGeneratingState('done')
+      if (!response.ok) {
+        throw new Error('Request failed')
+      }
+
+      const imageIds = await response.json()
+      setGeneratedImageUrls(imageIds)
+
+      setGeneratingState('done')
+    } catch (error) {
+      console.error(error)
+    }
   }
+
+  // const generateImage = async () => {
+  //   setGeneratingState('generating')
+
+  //   const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
+  //   setGeneratedImageUrls(imageIds)
+  //   await new Promise(resolve => setTimeout(resolve, 2000))
+  //   setGeneratingState('done')
+  // }
 
   return (
     <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
