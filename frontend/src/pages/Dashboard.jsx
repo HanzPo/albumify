@@ -98,7 +98,7 @@ function Dashboard() {
   // serialize the song and artist data for image generation api
   const generateImage = async () => {
     setGeneratingState('generating')
-    const serializedSongData = userSongs[0].reduce((result, item, index) => {
+    const serializedSongData = userSongs[selectedPlaylist].reduce((result, item, index) => {
       if (index < 6) {
         result[item.song] = item.artist;
       }
@@ -126,6 +126,21 @@ function Dashboard() {
     }
   }
 
+  const postittosptofiy = async (image) => {
+    try {
+      const headers = {
+        Authorization: `Bearer ${accessToken}`,
+        'Content-Type': 'image/jpeg',
+      }
+      const imageBlob = await axios.get(`http://127.0.0.1:8000/image_blob/${image}`)
+      const spotifyplaylistapiurl = `https://api.spotify.com/v1/playlists/${userPlaylists[selectedPlaylist].id}/images`
+      const updatetheplaylist = await axios.put(spotifyplaylistapiurl, imageBlob.data, { headers })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+
   // const generateImage = async () => {
   //   setGeneratingState('generating')
 
@@ -143,12 +158,13 @@ function Dashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             {generatedImageUrls.map((image, index) => {
               return (
-                <AspectRatio key={index} ratio={1}>
-                  <img className="showOnGenerationImg" style={{ animationDelay: `${index / 4}s` }} src={image} key={index} />
+                <AspectRatio onClick={(e) => { setSelectdSong(image); console.log(image) }} key={index} ratio={1}>
+                  <img className="showOnGenerationImg" style={{ borderRadius: '25px', animationDelay: `${index / 4}s` }} src={`http://127.0.0.1:8000/image/${image}`} key={index} />
                 </AspectRatio>
               )
             })}
           </div>
+          <button onClick={(e) => postittosptofiy(selectedSong)}><p>post it to your psotify</p></button>
         </>
       }
       {userData && userPlaylists &&
