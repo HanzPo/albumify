@@ -1,10 +1,12 @@
 import lyricsgenius
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
 from fastapi import Request
 from multiprocessing import Pool
 import json
 import openai
-
+import requests
+import random
 import os
 from dotenv import load_dotenv
 
@@ -44,7 +46,7 @@ def process_song(song):
     messages.append({"role": "user", "content": lyric_message},)
 
     chat = openai.ChatCompletion.create(
-        model="gpt-4", messages=messages, max_tokens=800
+        model="gpt-3.5-turbo", messages=messages, max_tokens=800
     )
 
     reply = chat.choices[0].message.content
@@ -70,7 +72,7 @@ async def create_item(request: Request):
     descriptions = "|".join(replies)
     messages.append({"role": "user", "content": descriptions},)
     chat = openai.ChatCompletion.create(
-        model="gpt-4", messages=messages, max_tokens=1000
+        model="gpt-3.5-turbo", messages=messages, max_tokens=1000
     )
 
     output = chat.choices[0].message.content + ". There should never be text in the resulting image."
@@ -83,4 +85,19 @@ async def create_item(request: Request):
     
     image_urls = [response['data'][i]['url'] for i in range(len(response['data']))]
 
-    return [replies,output,image_urls]
+    letters='abcdefghijklmnopqrstuvwxyz'
+
+    ret_ids = []
+
+    for url in image_urls:
+        name = ''.join(random.choice(letters) for i in range(40))
+        r = requests.get(url, allow_redirects=True)
+        with open("images/" +name + ".png", "wb") as file:
+            file.write(r.content)
+        ret_ids.append(name)
+
+    return ret_ids
+
+@app.get("/image/{image_id}")
+def get_image(image_id):
+    return FileResponse("images/" + image_id + ".png")
