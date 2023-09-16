@@ -117,11 +117,11 @@ function Dashboard() {
     //   }
 
     //   const imageIds = await response.json()
-      const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
-      setGeneratedImageUrls(imageIds)
+    const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
+    setGeneratedImageUrls(imageIds)
+    await new Promise(resolve => setTimeout(resolve, 2000))
 
-      setGeneratingState('done')
-
+    setGeneratingState('done')
     // } catch (error) {
     //   console.error(error)
     // }
@@ -133,7 +133,7 @@ function Dashboard() {
   return (
     <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
       {userData && userPlaylists &&
-        <>
+        <div>
           <h1 style={{ fontSize: '50px' }}>Hey, {userData.display_name}</h1>
           {selectedPlaylist !== -1 && (
             <div
@@ -152,17 +152,17 @@ function Dashboard() {
                 height: `${generatingState === 'generating' ? '100dvh' : generatingState === 'done' ? '0' : '100px'}`
               }}
             >
-              {generatingState === 'generating' ? (
+              {generatingState === 'generating' | generatingState === 'done' ? (
                 <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '8px' }}>
-                  <CircularProgress size='40px' isIndeterminate />
-                  <p style={{ fontSize: '20px' }}>Generating image...</p>
+                  {generatingState === 'generating' && <CircularProgress size='40px' isIndeterminate />}
+                  <p style={{ fontSize: '20px' }}>{generatingState === 'generating' ? 'Generating image...' : 'Generation complete!'}</p>
                 </div>
               ) : (
                 <h1 style={{ fontSize: '24px' }}>Generate playlist cover for {userPlaylists[selectedPlaylist].name}</h1>
               )}
             </div>
           )}
-        </>
+        </div>
       }
       <h1 style={{ fontSize: '20px', marginBottom: '12px' }}>Select one of your playlists</h1>
       {userSongs &&
