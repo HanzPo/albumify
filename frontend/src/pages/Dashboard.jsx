@@ -1,20 +1,24 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import {
   Accordion,
   AccordionItem,
   AccordionButton,
   AccordionPanel,
+  Box,
+  AccordionIcon,
+  AspectRatio
 } from "@chakra-ui/react";
 import axios from "axios";
 
 function Dashboard() {
-  const [isGatheringImages, setGatheringImages] = false;
+  const [isGatheringImages, setGatheringImages] = useState(false);
   const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userSongs, setSongs] = useState(null);
   const [userPlaylists, setUserPlaylists] = useState(null)
+  const [selectedPlaylist, setSelectedPlaylist] = useState(-1)
 
   // get accesstoken from the url
   useEffect(() => {
@@ -30,7 +34,7 @@ function Dashboard() {
     getAccessTokenFromURL();
   }, []);
 
-  // Get user Data (speicfically name)
+  // Get user Data and user playlist names
   useEffect(() => {
     if (accessToken) {
       const getUserData = axios.get("https://api.spotify.com/v1/me", {
@@ -38,7 +42,7 @@ function Dashboard() {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      const getUserPlaylist = axios.get(
+      const getUserPlaylists = axios.get(
         "https://api.spotify.com/v1/me/playlists",
         {
           headers: {
@@ -57,61 +61,84 @@ function Dashboard() {
     }
   }, [accessToken]);
 
+  // get song name and artist for each song from each playlist
+  useEffect(() => {
+    if (accessToken && userPlaylists) {
+      const playlistPromises = userPlaylists.map((playlist) =>
+        axios.get(`https://api.spotify.com/v1/playlists/${playlist.id}/tracks`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+      );
+      Promise.all(playlistPromises)
+        .then((playlistResponses) => {
+          const songsByPlaylist = playlistResponses.map((playlistResponse) =>
+            playlistResponse.data.items.map((track) => ({
+              artist: track.track.artists[0].name,
+              song: track.track.name,
+              img: track.track.album.images[0].url
+            }))
+          );
+
+          setSongs(songsByPlaylist);
+        })
+        .catch((error) => {
+          console.error("Error fetching playlist songs:", error);
+        });
+    }
+  }, [accessToken, userPlaylists]);
+
+  // serialize the song and artist data for image generation api
+  useEffect(() => {
+    if (userSongs) {
+      const serializedSongData = userSongs[0].reduce((result, item, index) => {
+        if (index < 6) {
+          result[item.song] = item.artist;
+        }
+        return result;
+      }, {})
+      // console.log(serializedSongData)
+    }
+  }, [userSongs])
+
+
   return (
-    <div>
-      <h1>{userData.display_name}</h1>
-      {/* This entire component will be mapped over for each element in the userPlaylists array state */}
-      <Accordion allowMultiple allowToggle>
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box as="span" flex='1' textAlign='left'>
-                Playlist 1 title  {/* Title of the playlist */}
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            {/* List of Songs in a table */}
-            - song 1
-            - song 2
-            - song 3
-            - song 4
-
-            <Box p="4">
-              <Button
-                colorScheme="blue"
-                size="lg" // Make the button larger
-                borderRadius="4px" // Reduce the border radius
-                boxShadow="4px 4px 8px 0px rgba(0, 0, 0, 0.2), -4px -4px 8px 0px rgba(255, 255, 255, 0.7)"
-                position="absolute" // Position the button absolutely
-                right="16px" // Move it to the right side
-                _hover={{
-                  boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.2), -2px -2px 4px 0px rgba(255, 255, 255, 0.7)",
-                }} >
-                Click me
-              </Button>
-            </Box>
-          </AccordionPanel>
-        </AccordionItem>
-
-        <AccordionItem>
-          <h2>
-            <AccordionButton>
-              <Box as="span" flex='1' textAlign='left'>
-                Section 2 title
-              </Box>
-              <AccordionIcon />
-            </AccordionButton>
-          </h2>
-          <AccordionPanel pb={4}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-            veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-            commodo consequat.
-          </AccordionPanel>
-        </AccordionItem>
-      </Accordion>
+    <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
+      {userData && userPlaylists &&
+        <>
+          <h1 style={{ fontSize: '50px' }}>Hey, {userData.display_name}</h1>
+          {selectedPlaylist !== -1 &&
+            <div className="magic-text" style={{ cursor: 'pointer', position: 'fixed', height: '100px', width: '100%', bottom: '0', marginLeft: '-50px', zIndex: '99', alignItems: 'center', display: 'flex', justifyContent: 'center' }}><h1 style={{ fontSize: '24px' }}>Generate playlist cover for {userPlaylists[selectedPlaylist].name}</h1></div>
+          }</>
+      }
+      <h1 style={{ fontSize: '20px', marginBottom: '12px' }}>Select one of your playlists</h1>
+      {userSongs &&
+        <Accordion allowToggle index={selectedPlaylist} onChange={(e) => { console.log(e); setSelectedPlaylist(e) }} >
+          {userSongs.map((playlist, index) => (
+            <AccordionItem key={index}>
+              <h2>
+                <AccordionButton className={selectedPlaylist === index ? 'magic-text' : ''} style={{ display: 'flex', gap: '4px' }}>
+                  <Box>
+                    <h1 style={{ fontSize: '24px' }}>{userPlaylists[index].name}</h1>
+                  </Box>
+                  <AccordionIcon style={{ height: '24px', width: '24px' }} />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel style={{ gap: '8px', display: 'grid', gridTemplateColumns: `repeat(3, 1fr)` }}>
+                {playlist.slice(0, 9).map((song, songIndex) => (
+                  <li key={songIndex} style={{ display: 'flex', flexDirection: 'column', gap: '0px' }}>
+                    <h1 style={{ fontSize: '20px' }}>{song.song}</h1>
+                    <h1>By {song.artist}</h1>
+                    <AspectRatio ratio={1}>
+                      <img src={song.img} />
+                    </AspectRatio>
+                  </li>
+                ))}
+              </AccordionPanel>
+            </AccordionItem>
+          ))
+          } </Accordion>}
     </div>
   );
 }
