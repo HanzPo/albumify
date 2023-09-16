@@ -21,6 +21,7 @@ function Dashboard() {
   const [selectedPlaylist, setSelectedPlaylist] = useState(-1)
   const [generatedImageUrls, setGeneratedImageUrls] = useState(null)
   const [generatingState, setGeneratingState] = useState('before')
+  const [selectedSong, setSelectdSong] = useState('')
 
   // get accesstoken from the url
   useEffect(() => {
@@ -95,50 +96,68 @@ function Dashboard() {
   }, [accessToken, userPlaylists]);
 
   // serialize the song and artist data for image generation api
+  // const generateImage = async () => {
+  //   setGeneratingState('generating')
+  //   const serializedSongData = userSongs[0].reduce((result, item, index) => {
+  //     if (index < 6) {
+  //       result[item.song] = item.artist;
+  //     }
+  //     return result;
+  //   }, {})
+  //   try {
+  //     const response = await fetch('http://127.0.0.1:8000/create', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       },
+  //       body: JSON.stringify(serializedSongData)
+  //     })
+
+  //     if (!response.ok) {
+  //       throw new Error('Request failed')
+  //     }
+
+  //     const imageIds = await response.json()
+
+  //     setGeneratingState('done')
+  //   } catch (error) {
+  //     console.error(error)
+  //   }
+
+  // }
+
   const generateImage = async () => {
     setGeneratingState('generating')
-    // const serializedSongData = userSongs[0].reduce((result, item, index) => {
-    //   if (index < 6) {
-    //     result[item.song] = item.artist;
-    //   }
-    //   return result;
-    // }, {})
-    // try {
-    //   const response = await fetch('http://127.0.0.1:8000/create', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(serializedSongData)
-    //   })
 
-    //   if (!response.ok) {
-    //     throw new Error('Request failed')
-    //   }
-
-    //   const imageIds = await response.json()
-    const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
+    const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
     setGeneratedImageUrls(imageIds)
     await new Promise(resolve => setTimeout(resolve, 2000))
-
     setGeneratingState('done')
-    // } catch (error) {
-    //   console.error(error)
-    // }
-
   }
-
-
 
   return (
     <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
+      {generatingState === 'done' &&
+        <>
+          <h1 style={{ width: '100%', textAlign: 'center', fontSize: '40px', fontWeight: '600', marginBottom: '40px' }} >Your suggested covers</h1>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+            {generatedImageUrls.map((image, index) => {
+              return (
+                <AspectRatio key={index} ratio={1}>
+                  <img className="showOnGenerationImg" style={{ animationDelay: `${index / 4}s` }} src={image} key={index} />
+                </AspectRatio>
+              )
+            })}
+          </div>
+        </>
+      }
       {userData && userPlaylists &&
         <div>
-          <h1 style={{ fontSize: '50px' }}>Hey, {userData.display_name}</h1>
+          <h1 className={`magic-text ${generatingState === 'done' && 'hideOnGeneration'}`} style={{ fontWeight: '600', fontSize: '50px' }}>Hey, {userData.display_name}</h1>
           {selectedPlaylist !== -1 && (
             <div
               onClick={(e) => generateImage()}
-              className='magic-text generatingButton'
+              className='magic-bg generatingButton'
               style={{
                 cursor: `${generatingState === 'generating' ? 'default' : 'pointer'}`,
                 position: 'fixed',
@@ -164,13 +183,13 @@ function Dashboard() {
           )}
         </div>
       }
-      <h1 style={{ fontSize: '20px', marginBottom: '12px' }}>Select one of your playlists</h1>
+      <h1 className={`${generatingState === 'done' && 'hideOnGeneration'}`} style={{ fontSize: '20px', marginBottom: '12px' }}>Select one of your playlists</h1>
       {userSongs &&
-        <Accordion allowToggle index={selectedPlaylist} onChange={(e) => { setSelectedPlaylist(e) }} >
+        <Accordion className={`${generatingState === 'done' && 'hideOnGeneration'}`} allowToggle index={selectedPlaylist} onChange={(e) => { setSelectedPlaylist(e) }} >
           {userSongs.map((playlist, index) => (
             <AccordionItem key={index}>
               <h2>
-                <AccordionButton className={selectedPlaylist === index ? 'magic-text' : ''} style={{ display: 'flex', gap: '4px' }}>
+                <AccordionButton className={selectedPlaylist === index ? 'magic-bg' : ''} style={{ display: 'flex', gap: '4px' }}>
                   <Box>
                     <h1 style={{ fontSize: '24px' }}>{userPlaylists[index].name}</h1>
                   </Box>

@@ -1,7 +1,7 @@
 :root {
   --purple: rgb(31, 55, 162);
   --violet: rgb(58, 127, 183);
-  --pink: rgb(143, 183, 244);
+  --pink: rgb(77, 111, 160);
 }
 
 
@@ -61,14 +61,32 @@
 }
 
 .magic-text {
-  animation: background-pan 3s linear infinite !important;
+  animation: background-pan 3s linear infinite;
   background: linear-gradient(to right,
       var(--purple),
       var(--violet),
       var(--pink),
       var(--purple));
-  -webkit-background-clip: text;
   background-size: 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   white-space: nowrap;
-  color: white;
+}
+
+.hideOnGeneration {
+  opacity: 0;
+}
+
+.showOnGenerationImg {
+  opacity: 0;
+  animation-name: waitawhile;
+  animation-duration: 1s;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease;
+}
+
+@keyframes waitawhile {
+  100% {
+    opacity: 1;
+  }
 }
