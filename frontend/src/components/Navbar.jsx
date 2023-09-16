@@ -6,7 +6,7 @@ function Navbar() {
   return (
     <Box bg="blue.400" p={4} color="white">
       <Flex alignItems="center" justifyContent="space-between">
-        <Heading size="md">Cover Generator</Heading>
+        <Heading size="md"><a href="/">Cover Generator</a></Heading>
         <ul className="nav-menu">
           <li>
             <a href="/about"> About Us </a>
