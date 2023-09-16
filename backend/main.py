@@ -44,7 +44,7 @@ def process_song(song):
     messages.append({"role": "user", "content": lyric_message},)
 
     chat = openai.ChatCompletion.create(
-        model="gpt-4", messages=messages, max_tokens=2000
+        model="gpt-4", messages=messages, max_tokens=800
     )
 
     reply = chat.choices[0].message.content
@@ -59,6 +59,8 @@ async def create_item(request: Request):
     songs = json.loads(await request.body())
     songs = [(song,artist) for song,artist in songs.items()]
 
+    songs = songs[0:6]
+
     with Pool() as pool:
         replies = pool.map(process_song, songs)
 
@@ -68,7 +70,7 @@ async def create_item(request: Request):
     descriptions = "|".join(replies)
     messages.append({"role": "user", "content": descriptions},)
     chat = openai.ChatCompletion.create(
-        model="gpt-4", messages=messages, max_tokens=2000
+        model="gpt-4", messages=messages, max_tokens=1000
     )
 
     output = chat.choices[0].message.content + ". There should never be text in the resulting image."
@@ -82,5 +84,3 @@ async def create_item(request: Request):
     image_urls = [response['data'][i]['url'] for i in range(len(response['data']))]
 
     return [replies,output,image_urls]
-
-
