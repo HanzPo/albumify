@@ -101,13 +101,14 @@ function Dashboard() {
   const generateImage = async () => {
     setGeneratingState('generating')
     const serializedSongData = userSongs[selectedPlaylist].reduce((result, item, index) => {
-      if (index < 4) {
+      if (index < 6) {
         result[item.song] = item.artist;
       }
       return result;
     }, {})
     try {
-      const response = await fetch('http://127.0.0.1:8000/create', {
+      const createUrl = 'http://127.0.0.1:8000/create?username=' + userData.display_name + '&playlist=' + userPlaylists[selectedPlaylist].name
+      const response = await fetch(createUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -127,6 +128,7 @@ function Dashboard() {
       console.error(error)
     }
   }
+
 
 
   const generatingMessages = ['Fetching song lyrics...', 'Generating song descriptions...', 'Reducing song descriptions to 1 concise prompt...', 'Building a playlist art cover...', 'Saving playlist art cover to server...']
