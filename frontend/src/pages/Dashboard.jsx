@@ -13,8 +13,12 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import './dashboard.css'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import houseIcon from '../assets/house.svg'
 
 function Dashboard() {
+  const location = useLocation()
+  const navigate = useNavigate()
   const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userSongs, setSongs] = useState(null);
@@ -150,13 +154,19 @@ function Dashboard() {
   }, [generatingTextIndex]);
 
 
-
+const handleNavigationRedirect = () => {
+  const newTab = window.open(`http://127.0.0.1:8000/download/${selectedSong}`, '_blank', 'noopener')
+  navigate(`/created#access_token=${accessToken}&token_type=Bearer&expires_in=3600&state=123`)
+}
   return (
     <div className="dashboard-container">
+      <Link to={`/created#access_token=${accessToken}&token_type=Bearer&expires_in=3600&state=123`} style={{ position:'absolute', top:'50px', right:'50px' }} >
+        Goto profile
+      </Link>
       {generatingState === 'done' &&
         <>
           <h1 style={{ width: '100%', textAlign: 'center', fontSize: '40px', fontWeight: '600', marginBottom: '40px' }} >Your suggested covers</h1>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '24px' }}>
             {generatedImageUrls.map((image, index) => {
               return (
                 <AspectRatio className={`${selectedSong === image ? 'chosenOne' : ''} aspectRatioThing`} onClick={(e) => { if (selectedSong === image) { setSelectedSong(null) } else setSelectedSong(image) }} key={index} ratio={1}>
@@ -166,7 +176,7 @@ function Dashboard() {
             })}
           </div>
           {selectedSong &&
-            <button onClick={(e) =>{ e.preventDefault() ; window.location.reload(); window.open(`http://127.0.0.1:8000/download/${selectedSong}`, '_blank');}} style={{ backgroundColor: 'rgba(115,219,241,1)', borderRadius: '24px', padding: '16px', fontSize: '20px' }} ><p>Post cover to your Spotify</p></button>
+            <button onClick={(e) =>{ handleNavigationRedirect()}} style={{ backgroundColor: 'rgba(115,219,241,1)', borderRadius: '24px', padding: '16px', fontSize: '20px' }} ><p>Download playlist cover!</p></button>
           }
         </>
       }

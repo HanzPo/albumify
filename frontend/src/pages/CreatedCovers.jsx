@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
+import { useLocation, Link } from 'react-router-dom'
 import axios from "axios";
 import "./CreatedCovers.css";
+import houseIcon from '../assets/house.svg'
 
 const CreatedCovers = () => {
+
+  const location = useLocation()
   const [accessToken, setAccessToken] = useState(null);
   const [userData, setUserData] = useState(null);
   const [userPlaylists, setUserPlaylists] = useState(null)
@@ -72,7 +76,10 @@ const CreatedCovers = () => {
   }, [accessToken]);
 
   return (
-    <div className="container">
+    <div className="container" style={{ padding:'50px' }}>
+      <Link to={`/dashboard#access_token=${accessToken}&token_type=Bearer&expires_in=3600&state=123`} style={{ position:'absolute', top:'50px', right:'50px', filter: 'invert(1)' }} >
+        Goto dashboard
+        </Link>
       {userData &&
       <h1 className="greeting magic-text">Hi {userData.display_name}, Checkout your Playlist Covers</h1>
       }
@@ -83,7 +90,7 @@ const CreatedCovers = () => {
             </h2>
             <div className="created-images">
               {playlistData[value].map((image, imageIndex) => (
-                <img key={imageIndex} src={`http://127.0.0.1:8000/image/${image}`} />
+                <img style={{ cursor: 'pointer' }} key={imageIndex} src={`http://127.0.0.1:8000/image/${image}`} onClick={(e)=>{window.open(`http://127.0.0.1:8000/download/${image}`, '_blank');}}/>
               ))}
             </div>
           </div>
