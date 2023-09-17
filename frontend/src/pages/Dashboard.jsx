@@ -12,6 +12,7 @@ import {
   CircularProgress
 } from "@chakra-ui/react";
 import axios from "axios";
+import './dashboard.css'
 
 function Dashboard() {
   const [accessToken, setAccessToken] = useState(null);
@@ -151,7 +152,7 @@ function Dashboard() {
 
 
   return (
-    <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
+    <div className="dashboard-container">
       {generatingState === 'done' &&
         <>
           <h1 style={{ width: '100%', textAlign: 'center', fontSize: '40px', fontWeight: '600', marginBottom: '40px' }} >Your suggested covers</h1>

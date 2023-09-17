@@ -4,6 +4,9 @@
   --pink: rgba(183,150,249,1);
 }
 
+* {
+  background-color: black;
+}
 
 .loading-icon {
   display: flex;

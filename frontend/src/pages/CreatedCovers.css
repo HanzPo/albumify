@@ -1,8 +1,11 @@
 .container {
   width: 100%;
+  height: 1vh;
   padding-left: 20px;
   height: auto;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  background-color: rgb(25, 25, 25);
+  overflow: hidden;
 }
 
 .nav {
@@ -12,7 +15,20 @@
 }
 
 .greeting {
-  font-size: 48px;
+  font-size: 5rem;
+  background: linear-gradient(90deg, rgb(193, 193, 252) 0%, rgba(240,92,255,1) 0%, rgba(115,219,241,1) 97%);
+  -webkit-background-clip: text; /* Clip text to the background */
+  color: transparent; /* Make text transparent */
+  padding-top: 100px;
+  margin-bottom: 30px;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 8px;
+  animation-name: typing;
+  animation-duration: 5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+
 }
 
 .create-button {
@@ -25,13 +41,22 @@
 
 .images-viewer {
   margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
 }
 
 .playlist-name {
-  font-size: 24px;
+  font-size: 4rem;
+  margin-top: 70px;
+  margin-bottom: 0px;
+  background: linear-gradient(90deg, rgba(193, 193, 252, 0.75) 0%, rgba(240,92,255,0.75) 50%, rgba(115,219,241,0.75) 97%);
+  -webkit-background-clip: text; /* Clip text to the background */
+  color: transparent; /* Make text transparent */
+  letter-spacing: 10px;
 }
 
 .created-images {
+  margin-top: 10px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -40,6 +65,46 @@
 .created-images img {
   width: 250px;
   margin-right: 20px;
-  margin-top: 20px;
+  margin-top: 30px;
   height: auto;
+  border-radius: 20px;
+}
+
+.created-images img:hover {
+  opacity: 0.75;
+  animation: glowing 2s infinite;
+}
+
+@keyframes typing {
+  from {
+      width: 0;
+  }
+  to {
+      width: 100%;
+  }
+}
+
+@keyframes blink-cursor {
+  50% {
+      border-right-color: transparent;
+  }
+}
+
+@keyframes fadeIn {
+  to {
+      opacity: 1; /* Fade in to become fully visible */
+  }
+}
+
+@keyframes glowing {
+  0% {
+    box-shadow: 0 0 10px rgba(211, 80, 255, 1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(211, 80, 255, 1),
+                0 0 30px rgba(211, 80, 255, 1);
+  }
+  100% {
+    box-shadow: 0 0 10px rgba(211, 80, 255, 1);
+  }
 }

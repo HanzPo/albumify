@@ -74,20 +74,19 @@ const CreatedCovers = () => {
   return (
     <div className="container">
       {userData &&
-      <h1 className="greeting">Hi, {userData.display_name}</h1>
+      <h1 className="greeting magic-text">Hi {userData.display_name}, Checkout your Playlist Covers</h1>
       }
-
-      {Object.keys(playlistData).map((value, index) => (
-        <div key={index} className="images-viewer">
-          <h2 className="playlist-name">
-            {value}
-          </h2>
-          <div className="created-images">
-            {playlistData[value].map((image, imageIndex) => (
-              <img key={imageIndex} src={`http://127.0.0.1:8000/image/${image}`} />
-            ))}
+        {Object.keys(playlistData).map((value, index) => (
+          <div key={index} className="images-viewer">
+            <h2 className="playlist-name">
+              {value}
+            </h2>
+            <div className="created-images">
+              {playlistData[value].map((image, imageIndex) => (
+                <img key={imageIndex} src={`http://127.0.0.1:8000/image/${image}`} />
+              ))}
+            </div>
           </div>
-        </div>
       ))}
     </div>
   );
