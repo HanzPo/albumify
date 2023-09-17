@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import './loginPage.css' 
 import { Button } from '@chakra-ui/react'
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from 'react-icons/fa';
-import Slider from "react-slick";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
