@@ -1,13 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import './loginPage.css' 
 import { Button } from '@chakra-ui/react'
 import { FaArrowAltCircleRight, FaArrowAltCircleLeft } from 'react-icons/fa';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { HashLink as Link } from 'react-router-hash-link';
 
 function LoginPage() {  
 
   const image = ['/background.png', '/background2.png', '/background3.png']  
+  const ref = useRef(null)
+  const handleClick = () => {
+    ref.current?.scrollIntoView({ behavior: 'smooth' });
+  };
   
   const [current, setCurrent] = useState(0);
   const length = image.length;
@@ -38,14 +43,19 @@ function LoginPage() {
         <div className="login-container">
           <div className="intro-container" id="intro-type" style={{ height:'100dvh',display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent:"center"}}>
             <h1 className="introduction"> Welcome to the Cover Page </h1>
-            <p classname="intro2"> Log in With Spotify Below to Get Started </p>
+            <p classname="intro2"> Log in With Spotify Below to Get Started, or See Our Featured Covers </p>
             <div className='spotify-button'>
-              <a href={spotifyAuthUrl}><Button className='magic-bg' id="login-button" style={{ backgroundColor: 'rgb(143, 183, 244)', color: 'white', margin:"30px"}} variant='outline'>
+              <a href={spotifyAuthUrl}>
+                  <Button className='magic-bg' id="login-button" style={{ backgroundColor: 'rgb(143, 183, 244)', color: 'white', margin:"30px"}} variant='outline'>
                     Connect your Spotify
-                  </Button></a>
+                  </Button>
+              </a>
+              <Button onClick={handleClick} className='magic-bg' id="login-button" style={{ backgroundColor: 'rgb(143, 183, 244)', color: 'white', margin:"30px"}} variant='outline'>
+                See Featured Covers 
+              </Button>
             </div>    
-          </div>
-          <h1 className="feature">Featured Covers!</h1>    
+          </div>  
+          <h1 className="feature" ref={ref}>Featured Covers!</h1>  
           <section className='slider'>
               <FaArrowAltCircleLeft className='left-arrow' onClick={prevSlide} color="pink"/>
               <FaArrowAltCircleRight className='right-arrow' onClick={nextSlide} color="pink"/>
