@@ -18,7 +18,6 @@ import json
 import psycopg
 
 import cohere
-co = cohere.Client('5zlaYffZx76wcqdlh6NBYRycqlb9AERLVrLbNNbn')
 
 # Load the environment variables from .env file
 load_dotenv()
@@ -27,6 +26,9 @@ load_dotenv()
 oak = os.getenv("OPENAI_API_KEY")
 gak = os.getenv("GENIUS_API_KEY")
 pg_conn_string = os.getenv("DATABASE_URL")
+cohere_key = os.getenv("COHERE_API_KEY")
+
+co = cohere.Client(cohere_key)
 
 conn = psycopg.connect(pg_conn_string, sslrootcert="./.postgresql/root.crt")
 try:
