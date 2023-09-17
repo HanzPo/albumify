@@ -62,15 +62,19 @@ def process_song(song):
     if l is None or type(l) is not str:
         return
 
-    messages = [ {"role": "system", "content": "Your job is to take in song lyrics and write describing elements of the lyrics. Your response should describe the colors. The shapes and objects. It should explain key details. It should also be under 100 words."} ]
+    # messages = [ {"role": "system", "content": "Your job is to take in song lyrics and write describing elements of the lyrics. Your response should describe the colors. The shapes and objects. It should explain key details. It should also be under 100 words."} ]
     lyric_message = l.replace("\n", " ") 
-    messages.append({"role": "user", "content": lyric_message},)
+    # messages.append({"role": "user", "content": lyric_message},)
 
-    chat = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", messages=messages, max_tokens=800
-    )
+    # chat = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo", messages=messages, max_tokens=800
+    # )
 
-    reply = chat.choices[0].message.content
+    # reply = chat.choices[0].message.content
+
+    reply = co.summarize(text = lyric_message, additional_command="Your job is to take in song lyrics and write describing elements of the lyrics. Your response should describe the colors. The shapes and objects. It should explain key details. It should also be under 100 words.")
+    reply=reply.summary
+    print(reply)
 
     return reply
 
