@@ -1,0 +1,45 @@
+.container {
+  width: 100%;
+  padding-left: 20px;
+  height: auto;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.nav {
+  text-align: right;
+  margin: 40px;
+  margin-bottom: 30px;
+}
+
+.greeting {
+  font-size: 48px;
+}
+
+.create-button {
+  padding: 0.2em;
+  background-color: purple;
+  color: white;
+  border-radius: 8px;
+  font-size: 24px;
+}
+
+.images-viewer {
+  margin-bottom: 30px;
+}
+
+.playlist-name {
+  font-size: 24px;
+}
+
+.created-images {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.created-images img {
+  width: 250px;
+  margin-right: 20px;
+  margin-top: 20px;
+  height: auto;
+}
