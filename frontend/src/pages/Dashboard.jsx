@@ -100,14 +100,15 @@ function Dashboard() {
   // serialize the song and artist data for image generation api
   const generateImage = async () => {
     setGeneratingState('generating')
-    const serializedSongData = userSongs[selectedPlaylist].reduce((result, item, index) => {
-      if (index < 4) {
+    const serializedSongData = userSongs[0].reduce((result, item, index) => {
+      if (index < 6) {
         result[item.song] = item.artist;
       }
       return result;
     }, {})
     try {
-      const response = await fetch('http://127.0.0.1:8000/create', {
+      const createUrl = 'http://127.0.0.1:8000/create?username=' + userData.display_name + '&playlist=' + userPlaylists[selectedPlaylist].name
+      const response = await fetch(createUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -155,9 +156,10 @@ function Dashboard() {
           <h1 style={{ width: '100%', textAlign: 'center', fontSize: '40px', fontWeight: '600', marginBottom: '40px' }} >Your suggested covers</h1>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             {generatedImageUrls.map((image, index) => {
+              let new_image = "http://127.0.0.1:8000/image/" + image
               return (
-                <AspectRatio className={`${selectedSong === image ? 'chosenOne' : ''} aspectRatioThing`} onClick={(e) => { if (selectedSong === image) { setSelectedSong(null) } else setSelectedSong(image) }} key={index} ratio={1}>
-                  <img onLoad={(e) => setGeneratingState('done')} className="showOnGenerationImg" style={{ animationDelay: `${index / 4}s` }} src={`http://127.0.0.1:8000/image/${image}`} key={index} />
+                <AspectRatio key={index} ratio={1}>
+                  <img className="showOnGenerationImg" style={{ animationDelay: `${index / 4}s` }} src={image} key={index} />
                 </AspectRatio>
               )
             })}

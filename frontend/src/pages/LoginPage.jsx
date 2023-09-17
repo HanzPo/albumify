@@ -31,7 +31,7 @@ function LoginPage() {
   }
 
 
-  const CLIENT_ID = 'eb97cfb2685f42ffb18d0bf9f3c8fc8a';
+  const CLIENT_ID = '86a9b174064c4972bdf1fdb949b81050';
   const REDIRECT_URI = 'http://127.0.0.1:5173/dashboard';
   
 
