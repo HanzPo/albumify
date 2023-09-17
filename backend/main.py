@@ -200,3 +200,21 @@ def select_image(image_id: str):
     conn.execute(update_sql, (image_id,))
     conn.commit()
     return Response(content="success", headers=headers)
+
+
+@app.get("/download/{image_id}")
+async def download_file(image_id: str):
+    file_name = image_id + ".jpg"
+    file_path = "images/" + file_name
+    download_name = "cover.jpg"
+
+    update_sql = """
+    UPDATE Users
+    SET selected = True
+    WHERE image_id = %s
+    """
+    conn.execute(update_sql, (image_id,))
+    conn.commit()
+    
+    # Use the FileResponse class to send the file as a response
+    return FileResponse(file_path, headers={"Content-Disposition": f"attachment; filename={download_name}"})

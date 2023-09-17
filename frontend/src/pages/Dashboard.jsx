@@ -165,7 +165,7 @@ function Dashboard() {
             })}
           </div>
           {selectedSong &&
-            <button style={{ backgroundColor: 'rgba(115,219,241,1)', borderRadius: '24px', padding: '16px', fontSize: '20px' }} ><p>Post cover to your Spotify</p></button>
+            <button onClick={(e) =>{ e.preventDefault() ; window.location.reload(); window.open(`http://127.0.0.1:8000/download/${selectedSong}`, '_blank');}} style={{ backgroundColor: 'rgba(115,219,241,1)', borderRadius: '24px', padding: '16px', fontSize: '20px' }} ><p>Post cover to your Spotify</p></button>
           }
         </>
       }

@@ -73,11 +73,6 @@ const CreatedCovers = () => {
 
   return (
     <div className="container">
-      <div className="nav">
-        <a href="/dashboard">
-          <button className="create-button">Create</button>
-        </a>
-      </div>
       {userData &&
       <h1 className="greeting">Hi, {userData.display_name}</h1>
       }
