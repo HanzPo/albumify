@@ -174,3 +174,5 @@ stats.html
 .eslintcache
 
 images/
+
+.postgresql
