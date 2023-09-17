@@ -1,9 +1,16 @@
+
+
 .login-container {
     /*background-image: url('../assets/background3.png');*/
     background-color: black;
     background-size: cover; /* Adjust the size as needed */
     background-position: center center; /* Center the image */
     background-repeat: no-repeat; /* Prevent image repetition */
+}
+
+.overall-container {
+    background:black;
+    margin-bottom: 0;
 }
 
 .intro-container {
@@ -14,10 +21,36 @@
     max-width: 100%;
 }
 
+.carousel-container {
+    max-width: 75%;
+    font-size: 2rem;
+    align-items: center;
+    margin-top: 0;
+    padding-top:0;
+    display: grid;
+    grid-template-rows: auto, auto;
+    text-align: center;
+    background: linear-gradient(90deg, rgba(235,235,244,1) 0%, rgba(115,219,241,1) 0%, rgba(240,92,255,1) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+    margin: auto;
+}
+
+.feature {
+    font-size: 2rem;
+    padding-top: 20px;
+    background: linear-gradient(90deg, rgba(235,235,244,1) 0%, rgba(115,219,241,1) 0%, rgba(240,92,255,1) 100%);
+    -webkit-background-clip: text;
+    color: transparent;
+    text-align: center;
+    margin-bottom: 0;
+}
+
 .introduction {
+    color: black;
     font-size: 5rem;
-    color: white;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    max-width: '100dvw';
     white-space: nowrap;
     overflow: hidden;
     animation-name: slide-up, typing;
@@ -34,7 +67,6 @@
 .intro-container p {
     font-size: 2rem;
     animation-name: slide-down;
-    color: white;
     font-weight: bold;
     animation-duration: 2s;
     animation-delay: 4.5s;
@@ -56,12 +88,59 @@
     animation-delay: 5.5s;
     animation-duration: 2s;
     animation-fill-mode: forwards;
-
+    color: black;
 }
 
 #login-button {
     padding: 30px;
-    color: purple;
+    color: black;
+}
+
+.slider {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+.image {
+    width: 1000px;
+    height: 600px;
+    border-radius: 10px;
+}
+
+.right-arrow {
+    position: absolute;
+    top: 50%;
+    right: 10%;
+    font-size: 3rem;
+    color: #000;
+    z-index: 10;
+    cursor: pointer;
+    user-select: none;
+}
+
+.left-arrow {
+    position: absolute;
+    top: 50%;
+    left: 60px;
+    font-size: 3rem;
+    color: #000;
+    z-index: 10;
+    cursor: pointer;
+    user-select: none;
+}
+
+.slide {
+    opacity: 0;
+    transition-duration: 1s ease;
+}
+
+.slide.active {
+    opacity: 1;
+    transition-duration: 1s;
+    transform: scale(1.08);
 }
 
 @keyframes typing {
