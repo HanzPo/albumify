@@ -62,7 +62,7 @@ def process_song(song):
     if l is None or type(l) is not str:
         return
 
-    messages = [ {"role": "system", "content": "You're job is to take in song lyrics and write describing elements of the lyrics. You response should describe the colors. The shapes and objects. It should explain key details. It should also be under 100 words."} ]
+    messages = [ {"role": "system", "content": "Your job is to take in song lyrics and write describing elements of the lyrics. Your response should describe the colors. The shapes and objects. It should explain key details. It should also be under 100 words."} ]
     lyric_message = l.replace("\n", " ") 
     messages.append({"role": "user", "content": lyric_message},)
 
