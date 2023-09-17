@@ -23,6 +23,7 @@ function Dashboard() {
   const [generatingState, setGeneratingState] = useState('before')
   const [selectedSong, setSelectedSong] = useState('')
   const [generatingTextIndex, setGeneratingTextIndex] = useState(0)
+  const [imgFinishedLoading, setImgFinishedLoading] = useState(null)
 
   // get accesstoken from the url
   useEffect(() => {
@@ -100,7 +101,7 @@ function Dashboard() {
   const generateImage = async () => {
     setGeneratingState('generating')
     const serializedSongData = userSongs[selectedPlaylist].reduce((result, item, index) => {
-      if (index < 2) {
+      if (index < 4) {
         result[item.song] = item.artist;
       }
       return result;
@@ -127,29 +128,13 @@ function Dashboard() {
     }
   }
 
-  const postCoverToSpotify = async (image) => {
-    try {
-      const imageBlob = await axios.get(`http://127.0.0.1:8000/image_blob/${image}`)
-      const spotifyplaylistapiurl = `https://api.spotify.com/v1/playlists/${userPlaylists[selectedPlaylist].id}/images`
-      const updatetheplaylist = await fetch(spotifyplaylistapiurl, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'image/jpeg',
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify('iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==')
-      })
-    } catch (e) {
-      console.error(e)
-    }
-  }
 
   const generatingMessages = ['Fetching song lyrics...', 'Generating song descriptions...', 'Reducing song descriptions to 1 concise prompt...', 'Building a playlist art cover...', 'Saving playlist art cover to server...']
   useEffect(() => {
     const intervalId = setInterval(() => {
       // Use the functional form of setGeneratingTextIndex to ensure you're working with the latest state value
       setGeneratingTextIndex((prevIndex) => (prevIndex + 1) % generatingMessages.length);
-    }, 2000);
+    }, 5000);
 
     return () => clearInterval(intervalId); // Cleanup the interval on unmount
   }, []);
@@ -161,6 +146,8 @@ function Dashboard() {
     }
   }, [generatingTextIndex]);
 
+
+
   return (
     <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
       {generatingState === 'done' &&
@@ -170,18 +157,18 @@ function Dashboard() {
             {generatedImageUrls.map((image, index) => {
               return (
                 <AspectRatio className={`${selectedSong === image ? 'chosenOne' : ''} aspectRatioThing`} onClick={(e) => { if (selectedSong === image) { setSelectedSong(null) } else setSelectedSong(image) }} key={index} ratio={1}>
-                  <img className="showOnGenerationImg" style={{ animationDelay: `${index / 4}s` }} src={`http://127.0.0.1:8000/image/${image}`} key={index} />
+                  <img onLoad={(e) => setGeneratingState('done')} className="showOnGenerationImg" style={{ animationDelay: `${index / 4}s` }} src={`http://127.0.0.1:8000/image/${image}`} key={index} />
                 </AspectRatio>
               )
             })}
           </div>
           {selectedSong &&
-            <button style={{ backgroundColor: 'rgba(115,219,241,1)', borderRadius: '24px', padding: '16px', fontSize: '20px' }} onClick={(e) => postCoverToSpotify(selectedSong)}><p>Post cover to your Spotify</p></button>
+            <button style={{ backgroundColor: 'rgba(115,219,241,1)', borderRadius: '24px', padding: '16px', fontSize: '20px' }} ><p>Post cover to your Spotify</p></button>
           }
         </>
       }
       {userData && userPlaylists &&
-        <div style={{ height: `${generatingState === 'generating' | generatingState === 'done' ? '0' : 'unset'}` }}>
+        <div style={{ height: `${generatingState === 'generating' | imgFinishedLoading === true ? '0' : 'unset'}` }}>
           <h1 className={`magic-text ${generatingState === 'generating' | generatingState === 'done' && 'hideOnGeneration'}`} style={{ fontWeight: '600', fontSize: '50px' }}>Hey, {userData.display_name}</h1>
           {selectedPlaylist !== -1 && (
             <div
