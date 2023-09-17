@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button, ButtonGroup, Slider } from "@chakra-ui/react";
 import {
   Accordion,
@@ -21,7 +21,8 @@ function Dashboard() {
   const [selectedPlaylist, setSelectedPlaylist] = useState(-1)
   const [generatedImageUrls, setGeneratedImageUrls] = useState(null)
   const [generatingState, setGeneratingState] = useState('before')
-  const [selectedSong, setSelectdSong] = useState('')
+  const [selectedSong, setSelectedSong] = useState('')
+  const [generatingTextIndex, setGeneratingTextIndex] = useState(0)
 
   // get accesstoken from the url
   useEffect(() => {
@@ -99,7 +100,7 @@ function Dashboard() {
   const generateImage = async () => {
     setGeneratingState('generating')
     const serializedSongData = userSongs[selectedPlaylist].reduce((result, item, index) => {
-      if (index < 6) {
+      if (index < 2) {
         result[item.song] = item.artist;
       }
       return result;
@@ -126,29 +127,39 @@ function Dashboard() {
     }
   }
 
-  const postittosptofiy = async (image) => {
+  const postCoverToSpotify = async (image) => {
     try {
-      const headers = {
-        Authorization: `Bearer ${accessToken}`,
-        'Content-Type': 'image/jpeg',
-      }
       const imageBlob = await axios.get(`http://127.0.0.1:8000/image_blob/${image}`)
       const spotifyplaylistapiurl = `https://api.spotify.com/v1/playlists/${userPlaylists[selectedPlaylist].id}/images`
-      const updatetheplaylist = await axios.put(spotifyplaylistapiurl, imageBlob.data, { headers })
+      const updatetheplaylist = await fetch(spotifyplaylistapiurl, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'image/jpeg',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify('iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==')
+      })
     } catch (e) {
       console.error(e)
     }
   }
 
+  const generatingMessages = ['Fetching song lyrics...', 'Generating song descriptions...', 'Reducing song descriptions to 1 concise prompt...', 'Building a playlist art cover...', 'Saving playlist art cover to server...']
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      // Use the functional form of setGeneratingTextIndex to ensure you're working with the latest state value
+      setGeneratingTextIndex((prevIndex) => (prevIndex + 1) % generatingMessages.length);
+    }, 2000);
 
-  // const generateImage = async () => {
-  //   setGeneratingState('generating')
+    return () => clearInterval(intervalId); // Cleanup the interval on unmount
+  }, []);
 
-  //   const imageIds = ['https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b273560c2d8b7fb5524a0ad7455e', 'https://i.scdn.co/image/ab67616d0000b27314823906ae5ad5cd8ddf41b8', 'https://i.scdn.co/image/ab67616d0000b2737b402d293c9328219d3d34ca']
-  //   setGeneratedImageUrls(imageIds)
-  //   await new Promise(resolve => setTimeout(resolve, 2000))
-  //   setGeneratingState('done')
-  // }
+  const pRef = useRef(null)
+  useEffect(() => {
+    if (pRef.current) {
+      pRef.current.textContent = generatingMessages[generatingTextIndex];
+    }
+  }, [generatingTextIndex]);
 
   return (
     <div style={{ padding: '50px', display: 'flex', gap: '12px', flexDirection: 'column' }}>
@@ -158,18 +169,20 @@ function Dashboard() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
             {generatedImageUrls.map((image, index) => {
               return (
-                <AspectRatio onClick={(e) => { setSelectdSong(image); console.log(image) }} key={index} ratio={1}>
-                  <img className="showOnGenerationImg" style={{ borderRadius: '25px', animationDelay: `${index / 4}s` }} src={`http://127.0.0.1:8000/image/${image}`} key={index} />
+                <AspectRatio className={`${selectedSong === image ? 'chosenOne' : ''} aspectRatioThing`} onClick={(e) => { if (selectedSong === image) { setSelectedSong(null) } else setSelectedSong(image) }} key={index} ratio={1}>
+                  <img className="showOnGenerationImg" style={{ animationDelay: `${index / 4}s` }} src={`http://127.0.0.1:8000/image/${image}`} key={index} />
                 </AspectRatio>
               )
             })}
           </div>
-          <button onClick={(e) => postittosptofiy(selectedSong)}><p>post it to your psotify</p></button>
+          {selectedSong &&
+            <button style={{ backgroundColor: 'rgba(115,219,241,1)', borderRadius: '24px', padding: '16px', fontSize: '20px' }} onClick={(e) => postCoverToSpotify(selectedSong)}><p>Post cover to your Spotify</p></button>
+          }
         </>
       }
       {userData && userPlaylists &&
-        <div>
-          <h1 className={`magic-text ${generatingState === 'done' && 'hideOnGeneration'}`} style={{ fontWeight: '600', fontSize: '50px' }}>Hey, {userData.display_name}</h1>
+        <div style={{ height: `${generatingState === 'generating' | generatingState === 'done' ? '0' : 'unset'}` }}>
+          <h1 className={`magic-text ${generatingState === 'generating' | generatingState === 'done' && 'hideOnGeneration'}`} style={{ fontWeight: '600', fontSize: '50px' }}>Hey, {userData.display_name}</h1>
           {selectedPlaylist !== -1 && (
             <div
               onClick={(e) => generateImage()}
@@ -190,7 +203,7 @@ function Dashboard() {
               {generatingState === 'generating' | generatingState === 'done' ? (
                 <div style={{ display: 'flex', alignItems: 'center', flexDirection: 'column', gap: '8px' }}>
                   {generatingState === 'generating' && <CircularProgress size='40px' isIndeterminate />}
-                  <p style={{ fontSize: '20px' }}>{generatingState === 'generating' ? 'Generating image...' : 'Generation complete!'}</p>
+                  <p ref={pRef} style={{ fontSize: '20px' }}>{generatingState === 'generating' ? generatingMessages[generatingTextIndex] : 'Generation complete!'}</p>
                 </div>
               ) : (
                 <h1 style={{ fontSize: '24px' }}>Generate playlist cover for {userPlaylists[selectedPlaylist].name}</h1>
@@ -199,9 +212,9 @@ function Dashboard() {
           )}
         </div>
       }
-      <h1 className={`${generatingState === 'done' && 'hideOnGeneration'}`} style={{ fontSize: '20px', marginBottom: '12px' }}>Select one of your playlists</h1>
+      <h1 className={`${generatingState === 'generating' | generatingState === 'done' && 'hideOnGeneration'}`} style={{ fontSize: '20px', marginBottom: '12px' }}>Select one of your playlists</h1>
       {userSongs &&
-        <Accordion className={`${generatingState === 'done' && 'hideOnGeneration'}`} allowToggle index={selectedPlaylist} onChange={(e) => { setSelectedPlaylist(e) }} >
+        <Accordion style={{ overflow: 'hidden', height: `${generatingState === 'generating' | generatingState === 'done' ? '0' : 'unset'}` }} className={`${generatingState === 'done' && 'hideOnGeneration'}`} allowToggle index={selectedPlaylist} onChange={(e) => { setSelectedPlaylist(e) }} >
           {userSongs.map((playlist, index) => (
             <AccordionItem key={index}>
               <h2>

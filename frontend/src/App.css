@@ -90,3 +90,15 @@
     opacity: 1;
   }
 }
+
+.aspectRatioThing {
+  border-radius: 24px;
+  overflow: hidden;
+}
+.aspectRatioThing:hover {
+  cursor: pointer;
+  filter: brightness(0.6)
+}
+.aspectRatioThing.chosenOne{
+  border: 7px solid rgba(115,219,241,1);
+}
