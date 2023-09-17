@@ -13,6 +13,11 @@ from dotenv import load_dotenv
 from PIL import Image
 import io
 import base64
+import json
+
+import psycopg
+
+import cohere
 
 # Load the environment variables from .env file
 load_dotenv()
@@ -20,6 +25,18 @@ load_dotenv()
 # Access the environment variables
 oak = os.getenv("OPENAI_API_KEY")
 gak = os.getenv("GENIUS_API_KEY")
+pg_conn_string = os.getenv("DATABASE_URL")
+cohere_key = os.getenv("COHERE_API_KEY")
+
+co = cohere.Client(cohere_key)
+
+conn = psycopg.connect(pg_conn_string, sslrootcert="./.postgresql/root.crt")
+try:
+    make_table = "CREATE TABLE Users (user_id VARCHAR, playlist_id VARCHAR, time TIMESTAMP, image_id VARCHAR, selected BOOL)"
+    res =  conn.execute(make_table)
+    conn.commit()
+except:
+    conn.rollback()
 
 genius = lyricsgenius.Genius(gak)
 openai.api_key = oak
@@ -65,8 +82,8 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all HTTP headers
 )
 
-@app.post("/create/")
-async def create_item(request: Request, response: Response):
+@app.post("/create")
+async def create_item(request: Request, username: str, playlist: str, response: Response):
     songs = json.loads(await request.body())
     songs = [(song,artist) for song,artist in songs.items()]
 
@@ -107,7 +124,17 @@ async def create_item(request: Request, response: Response):
         image.save("images/" + name + ".jpg",  optimize=True, quality=10)
         ret_ids.append(name)
 
-    response_data = "[\""+"\",\"".join(ret_ids)+"\"]"
+    # write to DB 
+    insert_sql = """
+    INSERT INTO Users (user_id, playlist_id, time, image_id, selected)
+    VALUES (%s, %s, CURRENT_TIMESTAMP, %s, %s)
+    """
+
+    for ret_id in ret_ids:
+        conn.execute(insert_sql, (username, playlist, ret_id, False))
+        conn.commit()
+
+    response_data = json.dumps(ret_ids)
 
     headers = {"Access-Control-Allow-Origin": "*"}
     return Response(content=response_data, headers=headers)
@@ -124,3 +151,52 @@ def get_image(image_id):
         file_bytes = file.read()
     base64_encoded = base64.b64encode(file_bytes).decode('utf-8')
     return PlainTextResponse(base64_encoded, headers=headers)
+
+@app.get("/featured/")
+def get_featured():
+    headers = {"Access-Control-Allow-Origin": "*"}
+     
+    select_sql = """
+    SELECT image_id FROM Users WHERE selected = True ORDER BY time DESC LIMIT 10
+    """
+    res = conn.execute(select_sql).fetchall()
+    conn.commit()
+
+    values= []
+    for row in res:
+        values.append(row[0])
+
+    return Response(content=json.dumps(values), headers=headers)
+
+@app.get("/user/{user_id}")
+def get_user(user_id: str):
+    headers = {"Access-Control-Allow-Origin": "*"}
+    # get everything associated with user
+    select_sql = """
+    SELECT playlist_id, image_id FROM Users WHERE user_id = %s
+    """
+    res = conn.execute(select_sql, (user_id,)).fetchall()
+    conn.commit()
+
+    playlist_to_images = {}
+
+    # Iterate through the rows and populate the dictionary
+    for row in res:
+        playlist_id, image_id = row
+        if playlist_id not in playlist_to_images:
+            playlist_to_images[playlist_id] = []
+        playlist_to_images[playlist_id].append(image_id)
+
+    return Response(content=json.dumps(playlist_to_images), headers=headers)
+
+@app.put("/select/{image_id}")
+def select_image(image_id: str):
+    headers = {"Access-Control-Allow-Origin": "*"}
+    update_sql = """
+    UPDATE Users
+    SET selected = True
+    WHERE image_id = %s
+    """
+    conn.execute(update_sql, (image_id,))
+    conn.commit()
+    return Response(content="success", headers=headers)

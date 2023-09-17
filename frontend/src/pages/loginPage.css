@@ -37,13 +37,14 @@
 }
 
 .feature {
-    font-size: 2rem;
+    font-size: 3rem;
     padding-top: 20px;
     background: linear-gradient(90deg, rgba(235,235,244,1) 0%, rgba(115,219,241,1) 0%, rgba(240,92,255,1) 100%);
     -webkit-background-clip: text;
     color: transparent;
     text-align: center;
     margin-bottom: 0;
+    font-weight: bold;
 }
 
 .introduction {
@@ -92,13 +93,14 @@
 }
 
 #login-button {
-    padding: 30px;
+    padding: 40px;
+    font-size: 30px;
     color: black;
 }
 
 .slider {
     position: relative;
-    height: 100vh;
+    height: 75vh;
     display: flex;
     justify-content: center;
     align-items: center;
