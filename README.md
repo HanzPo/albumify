@@ -1,4 +1,4 @@
-https://devpost.com/software/funny-name?ref_content=user-portfolio&ref_feature=in_progress
+https://devpost.com/software/funny-name
 
 # hack-the-north-2023
 
