@@ -1,4 +1,4 @@
-https://devpost.com/software/funny-name
+https://devpost.com/software/funny-name <-- WATCH A LIVE DEMO!
 
 # hack-the-north-2023
 
